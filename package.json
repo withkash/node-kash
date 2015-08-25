@@ -1,0 +1,28 @@
+{
+  "name": "node-kash",
+  "version": "0.1.1",
+  "description": "Kash API Node.js Client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "babel -d lib/ src/",
+    "prepublish": "npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/withkash/node-kash"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/withkash/node-kash/issues"
+  },
+  "homepage": "https://github.com/withkash/node-kash",
+  "devDependencies": {
+    "babel": "~5.8.21"
+  },
+  "dependencies": {
+    "restify": "~4.0.0",
+    "core-js": "~1.1.1"
+  }
+}
