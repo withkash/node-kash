@@ -4,7 +4,7 @@
 
 ## Documentation
 
-Documentation is available at [https://docs.withkash.com](https://docs.withkash.com).
+Documentation is available at [http://docs.withkash.com](http://docs.withkash.com).
 
 ## Tutorial
 
