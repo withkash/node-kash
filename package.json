@@ -4,7 +4,7 @@
   "description": "Kash API Node.js Client",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "compile": "babel -d lib/ src/",
     "prepublish": "npm run compile"
   },
@@ -12,14 +12,20 @@
     "type": "git",
     "url": "https://github.com/withkash/node-kash"
   },
-  "author": "",
+  "author": "Kash <info@withkash.com>",
+  "contributors": [
+    "Danny Su <danny@withkash.com>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/withkash/node-kash/issues"
   },
   "homepage": "https://github.com/withkash/node-kash",
   "devDependencies": {
-    "babel": "~5.8.21"
+    "babel": "~5.8.21",
+    "mocha": "^2.2.5",
+    "node-uuid": "^1.4.3",
+    "should": "^7.0.4"
   },
   "dependencies": {
     "restify": "~4.0.0",
