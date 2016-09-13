@@ -2,11 +2,9 @@
   "name": "node-kash",
   "version": "0.1.1",
   "description": "Kash API Node.js Client",
-  "main": "index.js",
+  "main": "src/kash.js",
   "scripts": {
-    "test": "mocha",
-    "compile": "babel -d lib/ src/",
-    "prepublish": "npm run compile"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -22,13 +20,13 @@
   },
   "homepage": "https://github.com/withkash/node-kash",
   "devDependencies": {
-    "babel": "~5.8.21",
-    "mocha": "^2.2.5",
+    "eslint": "2.5.3",
+    "mocha": "^2.5.3",
+    "mocha-eslint": "2.0.2",
     "node-uuid": "^1.4.3",
-    "should": "^7.0.4"
+    "should": "^11.1.0"
   },
   "dependencies": {
-    "restify": "~4.0.0",
-    "core-js": "~1.1.1"
+    "restify": "~4.0.0"
   }
 }

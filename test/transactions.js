@@ -1,92 +1,71 @@
 'use strict';
 
-var should = require('should');
+const should = require('should');
 
-var config = require('../.config.js');
+const config = require('../.config.js');
 
-var Kash = require('../index.js');
-var kash = new Kash(config.serverKey);
+const Kash = require('../src/kash.js');
+const kash = new Kash(config.serverKey, config.apiEndpoint);
 
-var customerId = config.customerId;
+const customerId = config.customerId;
 
 describe('transactions', function() {
 
     describe('charge customer', function() {
-        var authorizationId;
+        let authorizationId;
 
-        before(function(done) {
-            kash.authorizeAmount(customerId, 2000)
-                .then(function(result) {
-                    authorizationId = result.authorization_id;
-                    should.exist(authorizationId);
-                    done();
-                })
-                .catch(done);
+        before(function() {
+            return kash.authorizeAmount(customerId, 2000).should.be.fulfilled().then(result => {
+                authorizationId = result.authorization_id;
+                should.exist(authorizationId);
+            });
         });
 
         describe('with zero dollars', function() {
-            it('should fail', function(done) {
-                kash.createTransaction(authorizationId, 0)
-                    .then(function() {
-                        done('Should not succeed');
-                    })
-                    .catch(function(err) {
-                        should.exist(err.error);
-                        should.exist(err.statusCode);
-                        done();
-                    });
+            it('should fail', function() {
+                return kash.createTransaction(authorizationId, 0).should.be.rejected().then(err => {
+                    should.exist(err.error);
+                    should.exist(err.statusCode);
+                });
             });
         });
 
         describe('with $20 dollars', function() {
-            it('should succeed', function(done) {
-                kash.createTransaction(authorizationId, 2000)
-                    .then(function(result) {
-                        should.exist(result.transaction_id);
-                        done();
-                    })
-                    .catch(done);
+            it('should succeed', function() {
+                return kash.createTransaction(authorizationId, 2000).should.be.fulfilled().then(result => {
+                    should.exist(result.transaction_id);
+                });
             });
         });
     });
 
     describe('refund customer', function() {
-        var transactionId;
+        let transactionId;
 
-        before(function(done) {
-            kash.authorizeAmount(customerId, 2000)
+        before(function() {
+            return kash.authorizeAmount(customerId, 2000)
                 .then(function(result) {
                     return kash.createTransaction(result.authorization_id, 2000);
                 })
                 .then(function(result) {
                     transactionId = result.transaction_id;
-                    done();
-                })
-                .catch(done);
+                });
         });
 
         describe('for zero dollars', function() {
-            it('should fail', function(done) {
-                kash.refundTransaction(transactionId, 0)
-                    .then(function() {
-                        done('Should not succeed');
-                    })
-                    .catch(function(err) {
-                        should.exist(err.error);
-                        should.exist(err.statusCode);
-                        done();
-                    });
+            it('should fail', function() {
+                return kash.refundTransaction(transactionId, 0).should.be.rejected().then(err => {
+                    should.exist(err.error);
+                    should.exist(err.statusCode);
+                });
             });
         });
 
         describe('for full amount', function() {
-            it('should succeed', function(done) {
-                kash.refundTransaction(transactionId, 2000)
-                    .then(function(result) {
-                        should.exist(result.transaction_id);
-                        done();
-                    })
-                    .catch(done);
+            it('should succeed', function() {
+                return kash.refundTransaction(transactionId, 2000).should.be.fulfilled().then(result => {
+                    should.exist(result.transaction_id);
+                });
             });
         });
     });

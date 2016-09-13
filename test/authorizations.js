@@ -1,86 +1,68 @@
 'use strict';
 
-var should = require('should');
-var uuid = require('node-uuid');
+const should = require('should');
+const uuid = require('node-uuid');
 
-var config = require('../.config.js');
+const config = require('../.config.js');
 
-var Kash = require('../index.js');
-var kash = new Kash(config.serverKey);
+const Kash = require('../src/kash.js');
+const kash = new Kash(config.serverKey, config.apiEndpoint);
 
-var customerId = config.customerId;
+const customerId = config.customerId;
 
-describe('authorizations', function() {
+describe('Kash', function() {
 
-    describe('authorize amount', function() {
+    describe('#authorizeAmount()', function() {
 
-        describe('with zero dollars', function() {
-            it('should fail', function(done) {
-                kash.authorizeAmount(customerId, 0)
-                    .then(function() {
-                        done('Should not succeed');
-                    })
-                    .catch(function(err) {
-                        should.exist(err.error);
-                        should.exist(err.statusCode);
-                        done();
-                    });
+        context('with zero dollars', function() {
+            it('should fail', function() {
+                return kash.authorizeAmount(customerId, 0).should.be.rejected().then(err => {
+                    should.exist(err.error);
+                    should.exist(err.statusCode);
+                    err.statusCode.should.not.eql(403);
+                });
             });
         });
 
-        describe('with $20 dollars', function() {
-            it('should succeed', function(done) {
-                kash.authorizeAmount(customerId, 2000)
-                    .then(function(result) {
-                        should.exist(result.authorization_id);
-                        should.exist(result.valid_until);
-                        done();
-                    })
-                    .catch(done);
+        context('with $20 dollars', function() {
+            it('should succeed', function() {
+                return kash.authorizeAmount(customerId, 2000).should.be.fulfilled().then(result => {
+                    should.exist(result.authorization_id);
+                    should.exist(result.valid_until);
+                });
             });
         });
     });
 
-    describe('cancel authorization', function() {
-        var authorizationId;
+    describe('#cancelAuthorization()', function() {
+        let authorizationId;
 
-        before(function(done) {
-            kash.authorizeAmount(customerId, 2000)
+        before(function() {
+            return kash.authorizeAmount(customerId, 2000)
                 .then(function(result) {
                     authorizationId = result.authorization_id;
                     should.exist(authorizationId);
-                    done();
-                })
-                .catch(done);
+                });
         });
 
-        describe('with valid authorization_id', function() {
-            it('should cancel the authorization', function(done) {
-                kash.cancelAuthorization(authorizationId)
-                    .then(done)
-                    .catch(done);
+        context('with valid authorization_id', function() {
+            it('should cancel the authorization', function() {
+                return kash.cancelAuthorization(authorizationId);
             });
         });
 
-        describe('with already canceled authorization_id', function() {
-            it('should succeed', function(done) {
-                kash.cancelAuthorization(authorizationId)
-                    .then(done)
-                    .catch(done);
+        context('with already canceled authorization_id', function() {
+            it('should succeed', function() {
+                return kash.cancelAuthorization(authorizationId);
             });
         });
 
-        describe('with invalid authorization_id', function() {
-            it('should succeed', function(done) {
-                kash.cancelAuthorization(uuid.v4())
-                    .then(function() {
-                        done('Should not succeed');
-                    })
-                    .catch(function(err) {
-                        should.exist(err.error);
-                        should.exist(err.statusCode);
-                        done();
-                    });
+        context('with invalid authorization_id', function() {
+            it('should fail', function() {
+                return kash.cancelAuthorization(uuid.v4()).should.be.rejected().then(err => {
+                    should.exist(err.error);
+                    should.exist(err.statusCode);
+                });
             });
         });
     });
