@@ -1,6 +1,6 @@
 {
   "name": "node-kash",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Kash API Node.js Client",
   "main": "src/kash.js",
   "scripts": {
